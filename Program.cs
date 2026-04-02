@@ -66,6 +66,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.Urls.Add("http://0.0.0.0:10000");
 
 using (var scope = app.Services.CreateScope())
 {
@@ -74,5 +75,7 @@ using (var scope = app.Services.CreateScope())
 
     DbSeeder.SeedAdmin(db, config); // 🔐 pass config
 }
+
+
 
 app.Run();
