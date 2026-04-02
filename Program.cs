@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<JwtService>();
 
@@ -71,9 +71,11 @@ app.Urls.Add("http://0.0.0.0:10000");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>(); // ⚙️ get config
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-    DbSeeder.SeedAdmin(db, config); // 🔐 pass config
+    db.Database.Migrate(); // 🔥 creates tables automatically
+
+    DbSeeder.SeedAdmin(db, config);
 }
 
 
