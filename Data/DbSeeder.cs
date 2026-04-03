@@ -9,10 +9,6 @@ public static class DbSeeder
     public static void SeedAdmin(AppDbContext context,IConfiguration config)
     {
 
-        // 🔥 DELETE OLD ADMINS
-        context.Users.RemoveRange(context.Users.Where(u => u.Role == "Admin"));
-        context.SaveChanges();
-
         var admin1Email = config["AdminSettings:Admin1Email"];
         var admin1Password = config["AdminSettings:Admin1Password"];
 

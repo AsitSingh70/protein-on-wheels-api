@@ -18,10 +18,17 @@ public class OrdersController : ControllerBase
         _context = context;
     }
 
+    [Authorize]
     [HttpPost("place")]
     public IActionResult PlaceOrder([FromBody] CreateOrderDTO dto)
     {
-        var userId = int.Parse(User.FindFirst("id")?.Value);
+        // var userId = int.Parse(User.FindFirst("id")?.Value);
+
+        var userIdClaim = User.FindFirst("id")?.Value;
+        if (userIdClaim == null)
+            return Unauthorized("Invalid token");
+
+        var userId = int.Parse(userIdClaim);
 
         if (string.IsNullOrEmpty(dto.PhoneNumber) || string.IsNullOrEmpty(dto.Address))
             return BadRequest("Phone and Address required");
