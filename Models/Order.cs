@@ -9,7 +9,7 @@ public class Order
 
     public decimal TotalAmount { get; set; }
 
-    public DateTime OrderDate { get; set; } = DateTime.Now;
+    public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
     public List<OrderItem> Items { get; set; }
 
