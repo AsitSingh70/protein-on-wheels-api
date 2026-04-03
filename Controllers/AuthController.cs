@@ -101,49 +101,91 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("send-otp")]
-    public IActionResult SendOtp(string email)
+    public IActionResult SendOtp([FromQuery] string email)
     {
-
-        var user = _context.Users.FirstOrDefault(u => u.Email == email);
-
-        if (user != null && user.OtpExpireTime > DateTime.Now)
+        try
         {
-            return Ok("OTP already sent, please check email");
-        }
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-
-        var otp = new Random().Next(100000, 999999).ToString();
-
-
-        //updated here to add email verification for new users
-        // if (user == null)
-        // {
-        //     user = new User { Email = email };
-        //     _context.Users.Add(user);
-        // }
-
-        if (user == null)
-        {
-            user = new User
+            if (user != null && user.OtpExpireTime > DateTime.Now)
             {
-                Email = email,
-                Name = "Temp",
-                PasswordHash = "Temp123",
-                IsEmailVerified = false
-            };
+                return Ok("OTP already sent, please check email");
+            }
 
-            _context.Users.Add(user);
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = email,
+                    Name = "Temp",
+                    PasswordHash = "Temp123",
+                    IsEmailVerified = false
+                };
+
+                _context.Users.Add(user);
+            }
+
+            user.OtpCode = otp;
+            user.OtpExpireTime = DateTime.Now.AddMinutes(5);
+
+            _context.SaveChanges();
+
+            // 🔥 THIS IS FAILING
+            _email.SendOtp(email, otp);
+
+            return Ok("OTP sent to email");
         }
-
-        user.OtpCode = otp;
-        user.OtpExpireTime = DateTime.Now.AddMinutes(5);
-
-        _context.SaveChanges();
-
-        _email.SendOtp(email, otp);
-
-        return Ok("OTP sent to email");
+        catch (Exception ex)
+        {
+            return StatusCode(500, "ERROR: " + ex.Message);
+        }
     }
+    // [HttpPost("send-otp")]
+    // public IActionResult SendOtp(string email)
+    // {
+
+    //     var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+    //     if (user != null && user.OtpExpireTime > DateTime.Now)
+    //     {
+    //         return Ok("OTP already sent, please check email");
+    //     }
+
+
+    //     var otp = new Random().Next(100000, 999999).ToString();
+
+
+    //     //updated here to add email verification for new users
+    //     // if (user == null)
+    //     // {
+    //     //     user = new User { Email = email };
+    //     //     _context.Users.Add(user);
+    //     // }
+
+    //     if (user == null)
+    //     {
+    //         user = new User
+    //         {
+    //             Email = email,
+    //             Name = "Temp",
+    //             PasswordHash = "Temp123",
+    //             IsEmailVerified = false
+    //         };
+
+    //         _context.Users.Add(user);
+    //     }
+
+    //     user.OtpCode = otp;
+    //     user.OtpExpireTime = DateTime.Now.AddMinutes(5);
+
+    //     _context.SaveChanges();
+
+    //     _email.SendOtp(email, otp);
+
+    //     return Ok("OTP sent to email");
+    // }
 
     [HttpPost("verify-otp")]
     public IActionResult VerifyOtp(string email, string otp)
