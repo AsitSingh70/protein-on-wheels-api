@@ -61,9 +61,9 @@ public class AuthController : ControllerBase
 
 
         //  CHECK IF ACCOUNT IS LOCKED 
-        if (user.LockoutEndTime != null && user.LockoutEndTime > DateTime.Now) 
+        if (user.LockoutEndTime != null && user.LockoutEndTime > DateTime.UtcNow) 
         {
-            var remainingTime = (user.LockoutEndTime.Value - DateTime.Now).Minutes; 
+            var remainingTime = (user.LockoutEndTime.Value - DateTime.UtcNow).Minutes; 
             return BadRequest($"Account locked. Try again after {remainingTime} minutes"); 
         }
 
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
             // LOCK AFTER 5 ATTEMPTS 
             if (user.FailedLoginAttempts >= 5) 
             {
-                user.LockoutEndTime = DateTime.Now.AddMinutes(15); 
+                user.LockoutEndTime = DateTime.UtcNow.AddMinutes(15); 
                 user.FailedLoginAttempts = 0; //RESET AFTER LOCK 
 
                 _context.SaveChanges();
@@ -107,7 +107,7 @@ public class AuthController : ControllerBase
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-            if (user != null && user.OtpExpireTime > DateTime.Now)
+            if (user != null && user.OtpExpireTime > DateTime.UtcNow)
             {
                 return Ok("OTP already sent, please check email");
             }
@@ -128,7 +128,7 @@ public class AuthController : ControllerBase
             }
 
             user.OtpCode = otp;
-            user.OtpExpireTime = DateTime.Now.AddMinutes(5);
+            user.OtpExpireTime = DateTime.UtcNow.AddMinutes(5);
 
             _context.SaveChanges();
 
@@ -198,7 +198,7 @@ public class AuthController : ControllerBase
         if (user.OtpCode != otp)
             return BadRequest("Invalid OTP");
 
-        if (user.OtpExpireTime < DateTime.Now)
+        if (user.OtpExpireTime < DateTime.UtcNow)
             return BadRequest("OTP expired");
 
         user.IsEmailVerified = true;
@@ -229,7 +229,7 @@ public class AuthController : ControllerBase
 
         //UPDATED: store OTP for password reset
         user.OtpCode = otp;
-        user.OtpExpireTime = DateTime.Now.AddMinutes(5);
+        user.OtpExpireTime = DateTime.UtcNow.AddMinutes(5);
 
         user.IsResetOtpVerified = false;
 
@@ -255,7 +255,7 @@ public class AuthController : ControllerBase
             return BadRequest("Invalid OTP");
 
         //check expiry
-        if (user.OtpExpireTime < DateTime.Now)
+        if (user.OtpExpireTime < DateTime.UtcNow)
             return BadRequest("OTP expired");
 
 
