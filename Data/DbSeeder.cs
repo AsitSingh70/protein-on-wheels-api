@@ -9,6 +9,10 @@ public static class DbSeeder
     public static void SeedAdmin(AppDbContext context,IConfiguration config)
     {
 
+        // 🔥 DELETE OLD ADMINS
+        context.Users.RemoveRange(context.Users.Where(u => u.Role == "Admin"));
+        context.SaveChanges();
+
         var admin1Email = config["AdminSettings:Admin1Email"];
         var admin1Password = config["AdminSettings:Admin1Password"];
 
@@ -22,7 +26,8 @@ public static class DbSeeder
                 Name = "Asit Singh",
                 Email = admin1Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(admin1Password),
-                Role = "Admin"
+                Role = "Admin",
+                IsEmailVerified = true
             };
 
             context.Users.Add(admin1);
@@ -36,7 +41,8 @@ public static class DbSeeder
                 Name = "Souvik Pradhan",
                 Email = admin2Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(admin2Password),
-                Role = "Admin"
+                Role = "Admin",
+                IsEmailVerified = true
             };
 
             context.Users.Add(admin2);
