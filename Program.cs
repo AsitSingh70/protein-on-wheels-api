@@ -44,9 +44,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.AllowAnyOrigin()   
-            // policy.WithOrigins("http://localhost:4200",
-            //     "https://protein-api.onrender.com")   
+            // policy.AllowAnyOrigin()   
+            policy.WithOrigins("http://localhost:4200")   
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
