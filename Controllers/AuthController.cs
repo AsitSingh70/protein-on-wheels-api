@@ -120,7 +120,7 @@ public class AuthController : ControllerBase
                 {
                     Email = email,
                     Name = "Temp",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Temp123"),
+                    PasswordHash = "Temp@123",
                     IsEmailVerified = false
                 };
 
