@@ -120,7 +120,7 @@ public class AuthController : ControllerBase
                 {
                     Email = email,
                     Name = "Temp",
-                    PasswordHash = "Temp123",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Temp123"),
                     IsEmailVerified = false
                 };
 
@@ -139,7 +139,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "ERROR: " + ex.Message);
+            return StatusCode(500, ex.InnerException?.Message ?? ex.Message);
         }
     }
     // [HttpPost("send-otp")]
