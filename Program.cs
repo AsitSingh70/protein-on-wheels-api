@@ -45,7 +45,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             // policy.AllowAnyOrigin()   
-            policy.WithOrigins("http://localhost:4200")   
+            policy.WithOrigins("http://localhost:4200",
+                    "https://proteinonwheels.netlify.app")   
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
