@@ -108,10 +108,10 @@ public class AuthController : ControllerBase
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-            // if (user != null && user.OtpExpireTime > DateTime.UtcNow)
-            // {
-            //     return Ok("OTP already sent, please check email");
-            // }
+            if (user != null && user.OtpExpireTime > DateTime.UtcNow)
+            {
+                return Ok("OTP already sent, please check email");
+            }
 
             var otp = new Random().Next(100000, 999999).ToString();
 
