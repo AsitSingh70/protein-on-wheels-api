@@ -4,6 +4,7 @@ using ProteinOnWheelsAPI.DTOs;
 using ProteinOnWheelsAPI.Models;
 using ProteinOnWheelsAPI.Services;
 using BCrypt.Net;
+using System.Threading.Tasks;
 
 namespace ProteinOnWheelsAPI.Controllers;
 
@@ -101,7 +102,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("send-otp")]
-    public IActionResult SendOtp([FromQuery] string email)
+    public async Task<IActionResult> SendOtp([FromQuery] string email)
     {
         try
         {
@@ -133,8 +134,8 @@ public class AuthController : ControllerBase
             _context.SaveChanges();
 
             // 🔥 THIS IS FAILING
-            _email.SendOtp(email, otp);
-
+            await _email.SendOtp(email, otp);
+ 
             return Ok("OTP sent to email");
         }
         catch (Exception ex)
