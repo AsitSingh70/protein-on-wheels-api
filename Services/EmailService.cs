@@ -30,9 +30,9 @@ public class EmailService
 
         // Email message
         var mail = new MailMessage(
-            "singhasitkumar9@gmail.com", // 🔴 CHANGE THIS → same email as above (sender email)
+             _config["EmailSettings:Email"], // 🔴 CHANGE THIS → same email as above (sender email)
             email,                       // user email (OTP will be sent here)
-            "Your OTP Code for login to Protine On Wheels: ",             // email subject
+            "Your OTP Code for login to Protine On Wheels: ",// email subject
             $"{otp}"        // email body (OTP message)
         );
 
