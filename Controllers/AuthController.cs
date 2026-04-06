@@ -28,6 +28,11 @@ public class AuthController : ControllerBase
     {
         var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
 
+        if (user != null && user.IsEmailVerified && !string.IsNullOrEmpty(user.PasswordHash))
+        {
+            return BadRequest("User already exists. Please login.");
+        }
+
         if (user == null)
             return BadRequest("Please verify OTP first");
 
