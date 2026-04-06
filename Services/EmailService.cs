@@ -30,13 +30,21 @@ public class EmailService
 
         // Email message
         var mail = new MailMessage(
-             _config["EmailSettings:Email"], // 🔴 CHANGE THIS → same email as above (sender email)
+             "singhasitkumar9@gmail.com", // 🔴 CHANGE THIS → same email as above (sender email)
             email,                       // user email (OTP will be sent here)
             "Your OTP Code for login to Protine On Wheels: ",// email subject
             $"{otp}"        // email body (OTP message)
         );
 
         // Send email
-        smtp.Send(mail);
+        try
+        {
+            smtp.Send(mail);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("EMAIL ERROR: " + ex.Message);
+            throw;
+        }
     }
 }
