@@ -113,6 +113,12 @@ public class AuthController : ControllerBase
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
+            // 🚨 BLOCK EXISTING USER
+            if (user != null && user.IsEmailVerified && user.Name != "Temp")
+            {
+                return BadRequest("User already exists. Please login.");
+            }
+
             if (user != null && user.OtpExpireTime > DateTime.UtcNow)
             {
                 return Ok("OTP already sent, please check email");
@@ -138,7 +144,7 @@ public class AuthController : ControllerBase
 
             _context.SaveChanges();
 
-            // 🔥 THIS IS FAILING
+            
             await _email.SendOtp(email, otp);
  
             return Ok("OTP sent to email");
