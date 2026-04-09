@@ -105,4 +105,12 @@ public class ProductsController : ControllerBase
         return Ok("Deleted");
     }
 
+
+    //A website will hit this endpoint to keep backend alive becuse backend sleeps in every 15 min if request not comes..
+    [HttpGet("alive")]
+    public IActionResult Health()
+    {
+        return Ok("API Running");
+    }
+
 }
